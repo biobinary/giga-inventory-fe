@@ -17,6 +17,7 @@ interface AuthState {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  hasCheckedAuth: boolean;
   
   setAuth: (user: User, accessToken: string, refreshToken: string) => void;
   logout: () => void;
@@ -40,6 +41,7 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
+      hasCheckedAuth: false,
 
       setAuth: (user, accessToken, refreshToken) => {
         localStorage.setItem('accessToken', accessToken);
@@ -55,6 +57,7 @@ export const useAuthStore = create<AuthState>()(
           accessToken: null,
           refreshToken: null,
           isAuthenticated: false,
+          hasCheckedAuth: false,
         });
       },
 
@@ -89,15 +92,16 @@ export const useAuthStore = create<AuthState>()(
       checkAuth: async () => {
         const token = localStorage.getItem('accessToken');
         if (!token) {
-          set({ isAuthenticated: false, user: null });
+          set({ isAuthenticated: false, user: null, hasCheckedAuth: true });
           return;
         }
 
         try {
           const response = await api.get('/auth/profile');
-          set({ user: response.data, isAuthenticated: true });
+          set({ user: response.data, isAuthenticated: true, hasCheckedAuth: true });
         } catch (error) {
           useAuthStore.getState().logout();
+          set({ hasCheckedAuth: true });
         }
       },
     }),

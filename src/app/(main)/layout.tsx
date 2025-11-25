@@ -11,17 +11,21 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { isAuthenticated, checkAuth } = useAuthStore();
+  const { isAuthenticated, hasCheckedAuth, checkAuth } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (hasCheckedAuth && !isAuthenticated) {
       router.push('/login');
     }
-  }, [isAuthenticated, router]);
+  }, [hasCheckedAuth, isAuthenticated, router]);
+
+  if (!hasCheckedAuth) {
+    return null;
+  }
 
   if (!isAuthenticated) {
     return null;
