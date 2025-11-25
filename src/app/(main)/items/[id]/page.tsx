@@ -8,7 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Package, Calendar, ShoppingBag, MessageSquare, Send, Edit, Trash2 } from 'lucide-react';
+import { ArrowLeft, Package, Calendar, ShoppingBag, MessageSquare, Send, Edit, Trash2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDateTime } from '@/lib/utils';
 
@@ -41,6 +41,7 @@ export default function ItemDetailPage() {
   const [item, setItem] = useState<Item | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [borrowForm, setBorrowForm] = useState({
     quantity: 1,
     borrowDate: '',
@@ -81,9 +82,9 @@ export default function ItemDetailPage() {
 
   const handleBorrow = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!item) return;
 
+    setSubmitting(true);
     try {
       await api.post('/borrowings', {
         items: [{ itemId: item.id, quantity: borrowForm.quantity }],
@@ -96,6 +97,8 @@ export default function ItemDetailPage() {
       router.push('/borrowings');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Gagal mengajukan peminjaman');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -142,8 +145,9 @@ export default function ItemDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Loading...</div>
+      <div className="flex flex-col items-center justify-center h-64">
+        <Loader2 className="w-12 h-12 text-blue-600 dark:text-steel-blue animate-spin mb-4" />
+        <p className="text-gray-500 dark:text-gray-400">Memuat detail barang...</p>
       </div>
     );
   }
@@ -151,43 +155,63 @@ export default function ItemDetailPage() {
   if (!item) return null;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      <Button variant="ghost" onClick={() => router.back()}>
-        <ArrowLeft className="w-4 h-4 mr-2" />
+    <div className="max-w-7xl mx-auto space-y-6">
+      <Button 
+        variant="ghost" 
+        onClick={() => router.back()}
+        className="group hover:bg-gray-100 dark:hover:bg-steel-surface"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
         Kembali
       </Button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Item Info */}
-        <Card>
-          <div className="aspect-video bg-gray-100 flex items-center justify-center rounded-t-lg overflow-hidden">
+        <Card className="overflow-hidden">
+          <div className="relative aspect-video bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 overflow-hidden">
             {item.imageUrl ? (
               <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
             ) : (
-              <Package className="w-24 h-24 text-gray-400" />
+              <div className="flex items-center justify-center h-full">
+                <Package className="w-32 h-32 text-gray-400 dark:text-gray-600" />
+              </div>
+            )}
+            {item.category && (
+              <div className="absolute top-4 left-4">
+                <Badge variant="secondary" className="backdrop-blur-sm bg-white/90 dark:bg-steel-surface/90 shadow-lg">
+                  {item.category}
+                </Badge>
+              </div>
             )}
           </div>
           <CardHeader>
-            <div className="flex items-start justify-between">
-              <CardTitle className="text-2xl">{item.name}</CardTitle>
-              {item.category && <Badge variant="secondary">{item.category}</Badge>}
-            </div>
+            <CardTitle className="text-3xl">{item.name}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-gray-600">{item.description}</p>
+          <CardContent className="space-y-6">
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.description}</p>
+            
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-500">Stok Tersedia</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {item.stock} / {item.totalStock}
-                </p>
+              <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-steel-blue/10 dark:to-indigo-900/10 rounded-xl border border-blue-100 dark:border-steel-blue/30">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-medium">Stok Tersedia</p>
+                <div className="flex items-baseline gap-2">
+                  <p className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                    {item.stock}
+                  </p>
+                  <p className="text-xl text-gray-500 dark:text-gray-400">/ {item.totalStock}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-500">Status</p>
+              <div className="p-5 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 rounded-xl border border-green-100 dark:border-green-800/30">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 font-medium">Status</p>
                 {item.isAvailable ? (
-                  <Badge variant="success" className="mt-2">Tersedia</Badge>
+                  <div className="flex items-center gap-2 px-3 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-lg w-fit">
+                    <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm font-semibold">Tersedia</span>
+                  </div>
                 ) : (
-                  <Badge variant="danger" className="mt-2">Habis</Badge>
+                  <div className="flex items-center gap-2 px-3 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-lg w-fit">
+                    <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
+                    <span className="text-sm font-semibold">Habis</span>
+                  </div>
                 )}
               </div>
             </div>
@@ -195,17 +219,17 @@ export default function ItemDetailPage() {
         </Card>
 
         {/* Borrow Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <ShoppingBag className="w-5 h-5 mr-2" />
+        <Card className="border-2 border-blue-200 dark:border-steel-blue/50">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-steel-blue/10 dark:to-indigo-900/10">
+            <CardTitle className="flex items-center text-blue-700 dark:text-blue-400">
+              <ShoppingBag className="w-6 h-6 mr-2" />
               Form Peminjaman
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleBorrow} className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">Jumlah</label>
+          <CardContent className="pt-6">
+            <form onSubmit={handleBorrow} className="space-y-5">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Jumlah</label>
                 <Input
                   type="number"
                   min="1"
@@ -213,39 +237,62 @@ export default function ItemDetailPage() {
                   value={borrowForm.quantity}
                   onChange={(e) => setBorrowForm({ ...borrowForm, quantity: parseInt(e.target.value) })}
                   required
+                  className="h-11"
                 />
+                <p className="text-xs text-gray-500 dark:text-gray-400">Maksimal: {item.stock} unit</p>
               </div>
-              <div>
-                <label className="text-sm font-medium">Tanggal Pinjam</label>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Tanggal Pinjam
+                </label>
                 <Input
                   type="date"
                   value={borrowForm.borrowDate}
                   onChange={(e) => setBorrowForm({ ...borrowForm, borrowDate: e.target.value })}
                   required
+                  className="h-11"
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">Tanggal Kembali</label>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Tanggal Kembali
+                </label>
                 <Input
                   type="date"
                   value={borrowForm.returnDate}
                   onChange={(e) => setBorrowForm({ ...borrowForm, returnDate: e.target.value })}
                   required
+                  className="h-11"
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">Alasan Peminjaman</label>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Alasan Peminjaman</label>
                 <textarea
-                  className="w-full min-h-[100px] px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full min-h-[120px] px-4 py-3 text-sm border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-steel-blue bg-white dark:bg-gray-900/20 dark:text-white resize-none"
                   value={borrowForm.reason}
                   onChange={(e) => setBorrowForm({ ...borrowForm, reason: e.target.value })}
                   placeholder="Jelaskan untuk apa barang ini dipinjam..."
                   required
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={!item.isAvailable}>
-                <Calendar className="w-4 h-4 mr-2" />
-                Ajukan Peminjaman
+              <Button 
+                type="submit" 
+                className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-steel-blue dark:to-indigo-700 text-base font-semibold" 
+                disabled={!item.isAvailable || submitting}
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Memproses...
+                  </>
+                ) : (
+                  <>
+                    <Calendar className="w-5 h-5 mr-2" />
+                    Ajukan Peminjaman
+                  </>
+                )}
               </Button>
             </form>
           </CardContent>
@@ -254,21 +301,22 @@ export default function ItemDetailPage() {
 
       {/* Comments Section */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <MessageSquare className="w-5 h-5 mr-2" />
+        <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30">
+          <CardTitle className="flex items-center text-purple-700 dark:text-purple-400">
+            <MessageSquare className="w-6 h-6 mr-2" />
             Komentar ({comments.length})
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="pt-6 space-y-6">
           {/* Add Comment Form */}
-          <form onSubmit={handleAddComment} className="flex gap-2">
+          <form onSubmit={handleAddComment} className="flex gap-3">
             <Input
-              placeholder="Tulis komentar..."
+              placeholder="Tulis komentar Anda..."
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
+              className="h-11"
             />
-            <Button type="submit" size="icon">
+            <Button type="submit" size="icon" className="h-11 w-11 shrink-0">
               <Send className="w-4 h-4" />
             </Button>
           </form>
@@ -276,18 +324,22 @@ export default function ItemDetailPage() {
           {/* Comments List */}
           <div className="space-y-4">
             {comments.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">Belum ada komentar</p>
+              <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/30 rounded-xl">
+                <MessageSquare className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-3" />
+                <p className="text-gray-500 dark:text-gray-400">Belum ada komentar</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Jadilah yang pertama berkomentar!</p>
+              </div>
             ) : (
               comments.map((comment) => (
-                <div key={comment.id} className="border-l-2 border-blue-500 pl-4 py-2">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold text-sm">{comment.user.name}</span>
+                <div key={comment.id} className="group p-4 border-l-4 border-blue-500 dark:border-steel-blue bg-gray-50 dark:bg-steel-surface/30 rounded-r-lg hover:bg-gray-100 dark:hover:bg-steel-surface/50 transition-colors">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">{comment.user.name}</span>
                         {comment.user.role === 'ADMIN' && (
-                          <Badge variant="default" className="text-xs">Admin</Badge>
+                          <Badge variant="default" className="text-xs">👑 Admin</Badge>
                         )}
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
                           {formatDateTime(comment.createdAt)}
                         </span>
                       </div>
@@ -297,20 +349,21 @@ export default function ItemDetailPage() {
                             value={editText}
                             onChange={(e) => setEditText(e.target.value)}
                             autoFocus
+                            className="h-10"
                           />
-                          <Button size="sm" onClick={() => handleEditComment(comment.id)}>
-                            Save
+                          <Button size="sm" onClick={() => handleEditComment(comment.id)} className="h-10">
+                            Simpan
                           </Button>
-                          <Button size="sm" variant="ghost" onClick={() => setEditingComment(null)}>
-                            Cancel
+                          <Button size="sm" variant="ghost" onClick={() => setEditingComment(null)} className="h-10">
+                            Batal
                           </Button>
                         </div>
                       ) : (
-                        <p className="text-gray-700">{comment.content}</p>
+                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{comment.content}</p>
                       )}
                     </div>
                     {(user?.id === comment.user.id || user?.role === 'ADMIN') && editingComment !== comment.id && (
-                      <div className="flex gap-1">
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Button
                           size="icon"
                           variant="ghost"
@@ -318,6 +371,7 @@ export default function ItemDetailPage() {
                             setEditingComment(comment.id);
                             setEditText(comment.content);
                           }}
+                          className="h-8 w-8"
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -325,8 +379,9 @@ export default function ItemDetailPage() {
                           size="icon"
                           variant="ghost"
                           onClick={() => handleDeleteComment(comment.id)}
+                          className="h-8 w-8 hover:text-red-600 dark:hover:text-red-400"
                         >
-                          <Trash2 className="w-4 h-4 text-red-500" />
+                          <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
                     )}
