@@ -56,10 +56,8 @@ export default function NewItemPage() {
             const data = new FormData();
             data.append('name', formData.name);
             data.append('description', formData.description);
-            data.append('stock', formData.stock.toString());
             data.append('totalStock', formData.totalStock.toString());
             data.append('category', formData.category);
-            data.append('isAvailable', formData.isAvailable.toString());
 
             if (imageFile) {
                 data.append('file', imageFile);
