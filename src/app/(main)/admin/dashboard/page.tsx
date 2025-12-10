@@ -212,7 +212,7 @@ export default function AdminDashboard() {
         <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-steel-blue/10 dark:to-indigo-900/10">
           <CardTitle className="text-blue-700 dark:text-blue-400 flex items-center gap-2">
             <Activity className="w-6 h-6" />
-            Quick Actions
+            Aksi Cepat
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
@@ -220,7 +220,7 @@ export default function AdminDashboard() {
             <Link href="/admin/borrowings?status=PENDING">
               <Button className="w-full h-16 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white text-base font-semibold shadow-lg">
                 <Clock className="w-5 h-5 mr-2" />
-                Review Pending ({stats?.pending || 0})
+                Tinjau Menunggu ({stats?.pending || 0})
               </Button>
             </Link>
             <Link href="/admin/items">
@@ -232,7 +232,7 @@ export default function AdminDashboard() {
             <Link href="/admin/borrowings?status=OVERDUE">
               <Button className="w-full h-16 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white text-base font-semibold shadow-lg">
                 <AlertCircle className="w-5 h-5 mr-2" />
-                Cek Overdue ({stats?.overdue || 0})
+                Cek Keterlambatan ({stats?.overdue || 0})
               </Button>
             </Link>
           </div>

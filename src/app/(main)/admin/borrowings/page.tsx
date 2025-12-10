@@ -203,7 +203,7 @@ export default function AdminBorrowingsPage() {
         </div>
         <Button onClick={fetchBorrowings} variant="outline">
           <RefreshCw className="w-4 h-4 mr-2" />
-          Refresh
+          Muat Ulang
         </Button>
       </div>
 
