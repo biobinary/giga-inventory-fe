@@ -156,8 +156,8 @@ export default function ItemDetailPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <Button 
-        variant="ghost" 
+      <Button
+        variant="ghost"
         onClick={() => router.back()}
         className="group hover:bg-gray-100 dark:hover:bg-steel-surface"
       >
@@ -189,7 +189,7 @@ export default function ItemDetailPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.description}</p>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-steel-blue/10 dark:to-indigo-900/10 rounded-xl border border-blue-100 dark:border-steel-blue/30">
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 font-medium">Stok Tersedia</p>
@@ -235,7 +235,7 @@ export default function ItemDetailPage() {
                   min="1"
                   max={item.stock}
                   value={borrowForm.quantity}
-                  onChange={(e) => setBorrowForm({ ...borrowForm, quantity: parseInt(e.target.value) })}
+                  onChange={(e) => setBorrowForm({ ...borrowForm, quantity: parseInt(e.target.value) || 1 })}
                   required
                   className="h-11"
                 />
@@ -277,9 +277,9 @@ export default function ItemDetailPage() {
                   required
                 />
               </div>
-              <Button 
-                type="submit" 
-                className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-steel-blue dark:to-indigo-700 text-base font-semibold" 
+              <Button
+                type="submit"
+                className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-steel-blue dark:to-indigo-700 text-base font-semibold"
                 disabled={!item.isAvailable || submitting}
               >
                 {submitting ? (

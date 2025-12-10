@@ -8,12 +8,12 @@ import { useAuthStore } from '@/store/auth-store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  ArrowLeft, 
-  Package, 
-  Calendar, 
-  Clock, 
-  User, 
+import {
+  ArrowLeft,
+  Package,
+  Calendar,
+  Clock,
+  User,
   FileText,
   CheckCircle,
   XCircle,
@@ -66,18 +66,18 @@ interface Borrowing {
 }
 
 const statusConfig = {
-  PENDING: { label: 'Menunggu', variant: 'warning' as const, color: 'bg-yellow-100 text-yellow-800', icon: Clock },
-  APPROVED: { label: 'Disetujui', variant: 'success' as const, color: 'bg-green-100 text-green-800', icon: CheckCircle },
-  BORROWED: { label: 'Dipinjam', variant: 'default' as const, color: 'bg-blue-100 text-blue-800', icon: Package },
-  RETURNED: { label: 'Dikembalikan', variant: 'secondary' as const, color: 'bg-gray-100 text-gray-800', icon: CheckCircle },
-  REJECTED: { label: 'Ditolak', variant: 'danger' as const, color: 'bg-red-100 text-red-800', icon: XCircle },
-  OVERDUE: { label: 'Terlambat', variant: 'danger' as const, color: 'bg-red-600 text-white', icon: AlertCircle },
+  PENDING: { label: 'Menunggu', variant: 'warning' as const, color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400', icon: Clock },
+  APPROVED: { label: 'Disetujui', variant: 'success' as const, color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle },
+  BORROWED: { label: 'Dipinjam', variant: 'default' as const, color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', icon: Package },
+  RETURNED: { label: 'Dikembalikan', variant: 'secondary' as const, color: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300', icon: CheckCircle },
+  REJECTED: { label: 'Ditolak', variant: 'danger' as const, color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400', icon: XCircle },
+  OVERDUE: { label: 'Terlambat', variant: 'danger' as const, color: 'bg-red-600 text-white dark:bg-red-600 dark:text-white', icon: AlertCircle },
 };
 
 const extensionStatusConfig = {
-  PENDING: { label: 'Menunggu', color: 'bg-yellow-100 text-yellow-800' },
-  APPROVED: { label: 'Disetujui', color: 'bg-green-100 text-green-800' },
-  REJECTED: { label: 'Ditolak', color: 'bg-red-100 text-red-800' },
+  PENDING: { label: 'Menunggu', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' },
+  APPROVED: { label: 'Disetujui', color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' },
+  REJECTED: { label: 'Ditolak', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' },
 };
 
 export default function BorrowingDetailPage() {
@@ -123,7 +123,7 @@ export default function BorrowingDetailPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <Button variant="ghost" onClick={() => router.back()}>
+      <Button variant="ghost" onClick={() => router.back()} className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
         <ArrowLeft className="w-4 h-4 mr-2" />
         Kembali
       </Button>
@@ -136,10 +136,10 @@ export default function BorrowingDetailPage() {
               <CardTitle className="text-2xl mb-2">
                 Detail Peminjaman
               </CardTitle>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 ID: {borrowing.id}
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Dibuat: {formatDateTime(borrowing.createdAt)}
               </p>
             </div>
@@ -172,8 +172,8 @@ export default function BorrowingDetailPage() {
             <CardContent>
               <div className="space-y-3">
                 {borrowing.items.map((item) => (
-                  <div key={item.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-                    <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
+                  <div key={item.id} className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                    <div className="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
                       {item.item.imageUrl ? (
                         <img
                           src={item.item.imageUrl}
@@ -181,21 +181,21 @@ export default function BorrowingDetailPage() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <Package className="w-8 h-8 text-gray-400" />
+                        <Package className="w-8 h-8 text-gray-400 dark:text-gray-500" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <Link 
+                      <Link
                         href={`/items/${item.item.id}`}
-                        className="font-semibold text-blue-600 hover:underline block"
+                        className="font-semibold text-blue-600 dark:text-blue-400 hover:underline block"
                       >
                         {item.item.name}
                       </Link>
-                      <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
                         {item.item.description}
                       </p>
-                      <p className="text-sm font-medium text-gray-900 mt-2">
-                        Jumlah: <span className="text-blue-600">{item.quantity} unit</span>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white mt-2">
+                        Jumlah: <span className="text-blue-600 dark:text-blue-400">{item.quantity} unit</span>
                       </p>
                     </div>
                   </div>
@@ -215,28 +215,25 @@ export default function BorrowingDetailPage() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-5 h-5 text-blue-600" />
+                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">Tanggal Pinjam</p>
-                    <p className="text-sm text-gray-600">{formatDate(borrowing.borrowDate)}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">Tanggal Pinjam</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{formatDate(borrowing.borrowDate)}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    borrowing.status === 'OVERDUE' ? 'bg-red-100' : 'bg-green-100'
-                  }`}>
-                    <Clock className={`w-5 h-5 ${
-                      borrowing.status === 'OVERDUE' ? 'text-red-600' : 'text-green-600'
-                    }`} />
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${borrowing.status === 'OVERDUE' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-green-100 dark:bg-green-900/30'
+                    }`}>
+                    <Clock className={`w-5 h-5 ${borrowing.status === 'OVERDUE' ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'
+                      }`} />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">Tanggal Kembali</p>
-                    <p className={`text-sm ${
-                      borrowing.status === 'OVERDUE' ? 'text-red-600 font-semibold' : 'text-gray-600'
-                    }`}>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">Tanggal Kembali</p>
+                    <p className={`text-sm ${borrowing.status === 'OVERDUE' ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-gray-600 dark:text-gray-400'
+                      }`}>
                       {formatDate(borrowing.returnDate)}
                     </p>
                   </div>
@@ -244,12 +241,12 @@ export default function BorrowingDetailPage() {
 
                 {borrowing.actualReturnDate && (
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-5 h-5 text-gray-600" />
+                    <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">Tanggal Dikembalikan</p>
-                      <p className="text-sm text-gray-600">{formatDate(borrowing.actualReturnDate)}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">Tanggal Dikembalikan</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{formatDate(borrowing.actualReturnDate)}</p>
                     </div>
                   </div>
                 )}
@@ -266,7 +263,7 @@ export default function BorrowingDetailPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700">{borrowing.reason}</p>
+              <p className="text-gray-700 dark:text-gray-300">{borrowing.reason}</p>
             </CardContent>
           </Card>
 
@@ -280,10 +277,9 @@ export default function BorrowingDetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className={`p-4 rounded-lg ${
-                  borrowing.status === 'REJECTED' ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'
-                }`}>
-                  <p className="text-gray-700">
+                <div className={`p-4 rounded-lg ${borrowing.status === 'REJECTED' ? 'bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800' : 'bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800'
+                  }`}>
+                  <p className="text-gray-700 dark:text-gray-300">
                     {borrowing.rejectionReason || borrowing.adminNotes}
                   </p>
                 </div>
@@ -305,30 +301,30 @@ export default function BorrowingDetailPage() {
                   {borrowing.extensions.map((ext) => {
                     const extConfig = extensionStatusConfig[ext.status as keyof typeof extensionStatusConfig];
                     return (
-                      <div key={ext.id} className="border-l-4 border-blue-500 pl-4 py-3 bg-gray-50 rounded-r-lg">
+                      <div key={ext.id} className="border-l-4 border-blue-500 pl-4 py-3 bg-gray-50 dark:bg-gray-800/30 rounded-r-lg">
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <Badge className={extConfig.color}>
                               {extConfig.label}
                             </Badge>
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                               Diajukan: {formatDateTime(ext.createdAt)}
                             </p>
                           </div>
                         </div>
                         <div className="space-y-2 mt-3">
                           <div>
-                            <p className="text-xs text-gray-500">Tanggal kembali baru:</p>
-                            <p className="text-sm font-semibold text-gray-900">{formatDate(ext.newReturnDate)}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Tanggal kembali baru:</p>
+                            <p className="text-sm font-semibold text-gray-900 dark:text-white">{formatDate(ext.newReturnDate)}</p>
                           </div>
                           <div>
-                            <p className="text-xs text-gray-500">Alasan:</p>
-                            <p className="text-sm text-gray-700">{ext.reason}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Alasan:</p>
+                            <p className="text-sm text-gray-700 dark:text-gray-300">{ext.reason}</p>
                           </div>
                           {ext.adminNotes && (
                             <div>
-                              <p className="text-xs text-gray-500">Catatan Admin:</p>
-                              <p className="text-sm text-gray-700">{ext.adminNotes}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Catatan Admin:</p>
+                              <p className="text-sm text-gray-700 dark:text-gray-300">{ext.adminNotes}</p>
                             </div>
                           )}
                         </div>
@@ -353,25 +349,25 @@ export default function BorrowingDetailPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
-                <p className="text-xs text-gray-500">Nama</p>
-                <p className="text-sm font-medium text-gray-900">{borrowing.user.name}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Nama</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{borrowing.user.name}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500">Email</p>
-                <p className="text-sm text-gray-700">{borrowing.user.email}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Email</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">{borrowing.user.email}</p>
               </div>
               {borrowing.user.nrp && (
                 <div>
-                  <p className="text-xs text-gray-500">NRP</p>
-                  <p className="text-sm text-gray-700">{borrowing.user.nrp}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">NRP</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">{borrowing.user.nrp}</p>
                 </div>
               )}
               {borrowing.user.studentCardUrl && (
                 <div>
-                  <p className="text-xs text-gray-500 mb-2">Kartu Mahasiswa</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Kartu Mahasiswa</p>
                   <button
                     onClick={() => setShowStudentCard(true)}
-                    className="w-full aspect-video bg-gray-100 rounded-lg overflow-hidden hover:opacity-75 transition-opacity"
+                    className="w-full aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden hover:opacity-75 transition-opacity"
                   >
                     <img
                       src={borrowing.user.studentCardUrl}
@@ -399,16 +395,16 @@ export default function BorrowingDetailPage() {
                 </Link>
               )}
               {hasPendingExtension && (
-                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <p className="text-sm text-yellow-800">
+                <div className="p-3 bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                  <p className="text-sm text-yellow-800 dark:text-yellow-400">
                     <Clock className="w-4 h-4 inline mr-1" />
                     Perpanjangan sedang diproses
                   </p>
                 </div>
               )}
               {borrowing.status === 'OVERDUE' && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-800 font-semibold">
+                <div className="p-3 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg">
+                  <p className="text-sm text-red-800 dark:text-red-400 font-semibold">
                     <AlertCircle className="w-4 h-4 inline mr-1" />
                     Segera kembalikan barang!
                   </p>
@@ -421,11 +417,11 @@ export default function BorrowingDetailPage() {
 
       {/* Student Card Modal */}
       {showStudentCard && borrowing.user.studentCardUrl && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
           onClick={() => setShowStudentCard(false)}
         >
-          <div className="max-w-4xl w-full bg-white rounded-lg overflow-hidden">
+          <div className="max-w-4xl w-full bg-white dark:bg-gray-900 rounded-lg overflow-hidden">
             <div className="p-4 border-b flex items-center justify-between">
               <h3 className="font-semibold">Kartu Mahasiswa - {borrowing.user.name}</h3>
               <Button variant="ghost" size="sm" onClick={() => setShowStudentCard(false)}>
