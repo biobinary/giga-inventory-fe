@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/auth-store';
 import { Button } from '@/components/ui/button';
-import { LogOut, Package, ShoppingBag, User, LayoutDashboard } from 'lucide-react';
+import { LogOut, Package, ShoppingBag, User, LayoutDashboard, Clock } from 'lucide-react';
 
 export default function Navbar() {
   const router = useRouter();
@@ -57,8 +57,8 @@ export default function Navbar() {
                   </Button>
                 </Link>
                 <Link href="/admin/items">
-                  <Button 
-                    variant={isActive('/admin/items') ? 'default' : 'ghost'} 
+                  <Button
+                    variant={isActive('/admin/items') ? 'default' : 'ghost'}
                     size="sm"
                     className="relative"
                   >
@@ -70,8 +70,8 @@ export default function Navbar() {
                   </Button>
                 </Link>
                 <Link href="/admin/borrowings">
-                  <Button 
-                    variant={isActive('/admin/borrowings') ? 'default' : 'ghost'} 
+                  <Button
+                    variant={isActive('/admin/borrowings') ? 'default' : 'ghost'}
                     size="sm"
                     className="relative"
                   >
@@ -82,12 +82,25 @@ export default function Navbar() {
                     )}
                   </Button>
                 </Link>
+                <Link href="/admin/extensions">
+                  <Button
+                    variant={isActive('/admin/extensions') ? 'default' : 'ghost'}
+                    size="sm"
+                    className="relative"
+                  >
+                    <Clock className="w-4 h-4 mr-2" />
+                    <span>Extensions</span>
+                    {isActive('/admin/extensions') && (
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500"></span>
+                    )}
+                  </Button>
+                </Link>
               </>
             ) : (
               <>
                 <Link href="/items">
-                  <Button 
-                    variant={isActive('/items') ? 'default' : 'ghost'} 
+                  <Button
+                    variant={isActive('/items') ? 'default' : 'ghost'}
                     size="sm"
                     className="relative"
                   >
@@ -99,8 +112,8 @@ export default function Navbar() {
                   </Button>
                 </Link>
                 <Link href="/borrowings">
-                  <Button 
-                    variant={isActive('/borrowings') ? 'default' : 'ghost'} 
+                  <Button
+                    variant={isActive('/borrowings') ? 'default' : 'ghost'}
                     size="sm"
                     className="relative"
                   >
@@ -128,10 +141,10 @@ export default function Navbar() {
               </Button>
             </Link>
 
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleLogout} 
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
               className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/30"
             >
               <LogOut className="w-4 h-4 mr-2" />
